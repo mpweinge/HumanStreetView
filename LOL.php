@@ -1,4 +1,4 @@
-<?php
+\<?php
 
 if ($_FILES["file"]["error"] > 0)
 { 
@@ -35,6 +35,21 @@ else
 	{
 		mysqli_query($con, "INSERT INTO PHOTOS VALUES(".$LONGITUDE['degrees'].", ".$LONGITUDE['minutes'].", ".$LONGITUDE['seconds'].", ".$LATITUDE['degrees'].", ".$LATITUDE['minutes'].", ".$LATITUDE['seconds'].", 0, 0, 0, 'TEST')");
 		//mysqli_query($con, "INSERT INTO PHOTOS VALUES(0, 0, 0, 0, 0, 0, 0, 0, 0, 'LOL')");
+		$query = "SELECT COUNT(*) FROM PHOTOS;";
+		$result = mysqli_query($con, $query);
+		$count = mysqli_fetch_assoc($result);
+		print_r($count);
+		$ID = intval($count["COUNT(*)"]);
+		$FolderNum = floor($ID / 100);
+		if (is_dir($FolderNum))
+		{
+			move_uploaded_file($_FILES["file"]["tmp_name"], $FolderNum . "/" . $ID % 100);
+		}
+		else
+		{
+			mkdir($FolderNum);
+			move_uploaded_file($_FILES["file"]["tmp_name"], $FolderNum . "/" . $ID % 100);
+		}
 		mysqli_close($con);
 	}
 }
