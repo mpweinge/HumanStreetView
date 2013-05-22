@@ -1,6 +1,6 @@
 <?php
 // Those two files can be included only if INCLUDE_CHECK is defined
-
+header("Content-Type: text/plain");
 require_once 'Swift-5.0.0/lib/swift_required.php';
 
 session_name('tzLogin');
