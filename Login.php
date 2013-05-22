@@ -130,7 +130,7 @@ else if($_POST['submit']=='Register')
         $mailer = Swift_Mailer::newInstance($transport);
         $message = Swift_Message::newInstance('Wonderful Subject')
           ->setFrom(array('mpweingert@gmail.com' => 'Michael Weingert'))
-          ->setTo(array('mpweingert@gmail.com' => 'Michael Weingert'))
+          ->setTo(array('mpweingpert@gmail.com' => 'Michael Weingert'))
           ->setBody('This is the text of the mail send by Swift using SMTP transport.');
         //$attachment = Swift_Attachment::newInstance(file_get_contents('path/logo.png'), 'logo.png');  
         //$message->attach($attachment);
