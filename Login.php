@@ -189,32 +189,31 @@ else if ($_POST['submit'] == 'ChangePass')
 {
     $err = array();
 
-    if(strlen($_POST['username'])<4 || strlen($_POST['username'])>32)
-    {
-        $err[]='Your username must be between 3 and 32 characters!';
-    }
+   if(!$_POST['username'] || !$_POST['password'] || !$_POST['newpassword'])
+        $err[] = 'All the fields must be filled in!';
 
-    if(preg_match('/[^a-z0-9\-\_\.]+/i',$_POST['username']))
-    {
-        $err[]='Your username contains invalid characters!';
-    }
+    $con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
 
     if(!count($err))
     {
-        // If there are no errors
-        $pass = substr(md5($_SERVER['REMOTE_ADDR'].microtime().rand(1,100000)),0,6);
-        // Generate a random password
-
-        $_POST['email'] = mysql_real_escape_string($_POST['email']);
+        $_POST['password'] = mysql_real_escape_string($_POST['password']);
         $_POST['username'] = mysql_real_escape_string($_POST['username']);
+        $_POST['newpassword'] = mysql_real_escape_string($_POST['newpassword']);
         // Escape the input data
 
         $con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
+        // Escaping all input data
+        $query = "SELECT id,usr FROM tz_members WHERE usr='{$_POST['username']}' AND pass='".md5($_POST['password'])."'";
+        
+        $row = mysqli_fetch_assoc(mysqli_query($con, $query));
 
-        $query = "UPDATE tz_members SET pass = " . md5($_POST['password']) . 
-        "where usr = " . $_POST['username'];
+        if($row['usr'])
+        {
+            $query = "UPDATE tz_members SET pass = " . md5($_POST['newpassword']) . 
+            "where usr = " . $_POST['username'];
 
-        mysqli_query($con, $query);
+            mysqli_query($con, $query);
+        }
 
     }
 }
