@@ -12,6 +12,17 @@ if (mysqli_connect_errno() )
 else
 {
 	echo "Connected successfullly";
+	$query = "SELECT * FROM PHOTOS";
+	$results = mysqli_query($con, $query);
+	if ($results)
+	{
+		$LongData = array();
+		while ($row = $results->fetch_assoc())
+		{
+			array_push($LongData, $row);
+		}
+		echo json_encode($LongData);
+	}
 }
 
 //$encodedResponse = json_encode($accountJSON);

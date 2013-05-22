@@ -1,5 +1,6 @@
 <html>
 <body>
+<script src="jquery-1.9.1.min.js"></script>
 <div id="fb-root"></div>
 <script>
   // Additional JS functions here
@@ -72,5 +73,39 @@ enctype="multipart/form-data">
 <!--Below we include the Login Button social plugin. This button uses the JavaScript SDK to-->
 <!--present a graphical Login button that triggers the FB.login() function when clicked.-->
 <fb:login-button show-faces="true" width="200" max-rows="1"></fb:login-button>
+
+<button id="AJAXBUTTON">Test reading MySQL Database AJAX style</button>
+ 
+<script type="text/javascript">
+     $(document).ready(function(){
+            $('#AJAXBUTTON').click(function(){
+		alert("Entering here");
+                 $.ajax({
+                      type: "GET",
+                      url: "AJAXTest.php",
+                      data: "query="+"ReadGPS",
+                      success: function(msg)
+                      {
+			var GPSInfo = eval('(' + msg + ')');
+			for (var i = 0; i < GPSInfo.length; i++)
+			{
+				alert(GPSInfo[i]);
+			}
+                        document.getElementById("AJAXTEST").innerHTML = msg;    
+                        alert(msg);                     
+                      },
+                      error: function(jqXHR, textStatus, errorThrown) 
+                      {
+                        alert("failed");
+                      }
+                     })
+            });
+        });
+
+
+    </script>
+<div id="AJAXTEST">
+</div>
+
 </body>
 </html>

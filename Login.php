@@ -38,19 +38,27 @@ if ($_GET['submit'] == 'GetLogin')
     }
     else
     {
-        $LoginInfo = unserialize($_COOKIE['cookie']);
+        $LoginInfo = unserialize($_COOKIE['loginCookie']);
         $LoginInfo['username'] = mysql_real_escape_string($LoginInfo['username']);
         $LoginInfo['password'] = mysql_real_escape_string($LoginInfo['password']);
 
         // Escaping all input data
         $query = "SELECT id,usr FROM tz_members WHERE usr='{$LoginInfo['username']}' AND pass='".md5($LoginInfo['password'])."'";
-        
+
+	$con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo"); 
+     
         $row = mysqli_fetch_assoc(mysqli_query($con, $query));
 
         if($row['usr'])
         {
             echo "Logged in as " . $LoginInfo['username'];
         }
+	else 
+	{
+		$err[] = "Invalid username/pass";
+		print_r(unserialize($_COOKIE['loginCookie']));
+		print_r($LoginInfo);
+	}
     }
     exit;
 }
@@ -87,9 +95,9 @@ else if($_POST['submit']=='Login')
 
             // Store login data in cookie
             $LoginData = array();
-            $LoginData['username'] = $_POST['username']
+            $LoginData['username'] = $_POST['username'];
             $LoginData['password'] = $_POST['password'];
-            setcookie('loginCookie', serialize($info));
+            setcookie('loginCookie', serialize($LoginData));
 
             // We create the tzRemember cookie
         }

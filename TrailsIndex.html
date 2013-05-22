@@ -15,11 +15,11 @@
                       success: function(msg)
                       {
                         document.getElementById("AJAXTEST").innerHTML = msg    
-                        alert(msg);                     
+                       // alert(msg);                     
                       },
                       error: function(jqXHR, textStatus, errorThrown) 
                       {
-                        alert("failed");
+                      //  alert("failed");
                       }
                      })
             });
@@ -32,11 +32,11 @@
                       success: function(msg)
                       {
                         document.getElementById("LogInCheck").innerHTML = msg    
-                        alert(msg);                     
+                      //  alert(msg);                     
                       },
                       error: function(jqXHR, textStatus, errorThrown) 
                       {
-                        alert("failed");
+                     //   alert("failed" + jqXHR + textStatus + errorThrown);
                       }
                      });
 
@@ -50,7 +50,7 @@
 <div id="AJAXTEST">
 </div>
 
-<p1> Logged in? <p1> <p1 id="LogInCheck"> No </p>
+<p1> Logged in? <p1> <p1 id="LogInCheck"> No </p1>
 
 <div>
 <!-- Login Form -->
