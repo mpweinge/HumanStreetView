@@ -5,7 +5,8 @@
 <button id="AJAXBUTTON">Test reading MySQL Database AJAX style</button>
 
 <script type="text/javascript">
-     $(document).ready(function(){
+     $(document).ready(function()
+     {
             $('#AJAXBUTTON').click(function(){
                  $.ajax({
                       type: "GET",
@@ -22,6 +23,25 @@
                       }
                      })
             });
+
+            //Check whether the user is logged in or not
+
+            $.ajax({
+                      type: "GET",
+                      url: "Login.php?submit=GetLogin",
+                      success: function(msg)
+                      {
+                        document.getElementById("LogInCheck").innerHTML = msg    
+                        alert(msg);                     
+                      },
+                      error: function(jqXHR, textStatus, errorThrown) 
+                      {
+                        alert("failed");
+                      }
+                     });
+
+
+
         });
 
 
@@ -29,6 +49,8 @@
 
 <div id="AJAXTEST">
 </div>
+
+<p1> Logged in? <p1> <p1 id="LogInCheck"> No </p>
 
 <div>
 <!-- Login Form -->

@@ -29,7 +29,32 @@ if(isset($_GET['logoff']))
     exit;
 }
 
-if($_POST['submit']=='Login')
+if ($_GET['submit'] == 'GetLogin')
+{
+    $err = array();
+    if ( !isset($_COOKIE['loginCookie'] ) )
+    {
+        $err[] = "No login cookie";
+    }
+    else
+    {
+        $LoginInfo = unserialize($_COOKIE['cookie']);
+        $LoginInfo['username'] = mysql_real_escape_string($LoginInfo['username']);
+        $LoginInfo['password'] = mysql_real_escape_string($LoginInfo['password']);
+
+        // Escaping all input data
+        $query = "SELECT id,usr FROM tz_members WHERE usr='{$LoginInfo['username']}' AND pass='".md5($LoginInfo['password'])."'";
+        
+        $row = mysqli_fetch_assoc(mysqli_query($con, $query));
+
+        if($row['usr'])
+        {
+            echo "Logged in as " . $LoginInfo['username'];
+        }
+    }
+    exit;
+}
+else if($_POST['submit']=='Login')
 {
     // Checking whether the Login form has been submitted
 
@@ -60,9 +85,12 @@ if($_POST['submit']=='Login')
             $_SESSION['id'] = $row['id'];
             $_SESSION['rememberMe'] = $_POST['rememberMe'];
 
-            // Store some data in the session
+            // Store login data in cookie
+            $LoginData = array();
+            $LoginData['username'] = $_POST['username']
+            $LoginData['password'] = $_POST['password'];
+            setcookie('loginCookie', serialize($info));
 
-            setcookie('tzRemember',$_POST['rememberMe']);
             // We create the tzRemember cookie
         }
         else $err[]='Wrong username and/or password!';
