@@ -209,11 +209,19 @@ else if ($_POST['submit'] == 'ChangePass')
 
         if($row['usr'])
         {
-            $query = "UPDATE tz_members SET pass = " . md5($_POST['newpassword']) . 
-            "where usr = " . $_POST['username'];
+            $query = 'UPDATE tz_members SET pass = "' . md5($_POST['newpassword']) . 
+            '" where usr = "' . $_POST['username'] . '"';
+
+		echo $query;
 
             mysqli_query($con, $query);
+		echo "Made it into here";
         }
+	else
+	{
+		print_r($_POST);
+		echo md5($_POST['password']);
+	}
 
     }
 }
