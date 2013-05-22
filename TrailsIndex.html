@@ -32,7 +32,13 @@
                       success: function(msg)
                       {
                         document.getElementById("LogInCheck").innerHTML = msg    
-                      //  alert(msg);                     
+                      //  alert(msg); 
+                        if (msg.indexOf("Logged in") !== -1)
+                        {
+                           //We are actually logged in as someone
+                          document.getElementById("SignUpDiv").style.display = 'none';
+                          document.getElementById("LogInDiv").style.display = 'none';
+                        }                    
                       },
                       error: function(jqXHR, textStatus, errorThrown) 
                       {
@@ -52,7 +58,7 @@
 
 <p1> Logged in? <p1> <p1 id="LogInCheck"> No </p1>
 
-<div>
+<div id="LogInDiv">
 <!-- Login Form -->
 <form action="Login.php" method="post">
 <h1>Member Login</h1>
@@ -68,7 +74,7 @@
 
 </div>
 
-<div>
+<div id="SignUpDiv">
 
 <!-- Register Form -->
 

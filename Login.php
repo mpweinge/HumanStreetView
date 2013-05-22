@@ -185,4 +185,37 @@ else if($_POST['submit']=='Register')
 
     exit;
 }
+else if ($_POST['submit'] == 'ChangePass')
+{
+    $err = array();
+
+    if(strlen($_POST['username'])<4 || strlen($_POST['username'])>32)
+    {
+        $err[]='Your username must be between 3 and 32 characters!';
+    }
+
+    if(preg_match('/[^a-z0-9\-\_\.]+/i',$_POST['username']))
+    {
+        $err[]='Your username contains invalid characters!';
+    }
+
+    if(!count($err))
+    {
+        // If there are no errors
+        $pass = substr(md5($_SERVER['REMOTE_ADDR'].microtime().rand(1,100000)),0,6);
+        // Generate a random password
+
+        $_POST['email'] = mysql_real_escape_string($_POST['email']);
+        $_POST['username'] = mysql_real_escape_string($_POST['username']);
+        // Escape the input data
+
+        $con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
+
+        $query = "UPDATE tz_members SET pass = " . md5($_POST['password']) . 
+        "where usr = " . $_POST['username'];
+
+        mysqli_query($con, $query);
+
+    }
+}
 ?>
