@@ -1,5 +1,8 @@
 <?php
 
+define('THUMBNAIL_IMAGE_MAX_WIDTH', 100);
+define('THUMBNAIL_IMAGE_MAX_HEIGHT', 100);
+
 if ($_FILES["file"]["error"] > 0)
 { 
   echo "Error: " . $_FILES["file"]["error"] . "<br>";
@@ -49,11 +52,15 @@ else
 		{
 			mkdir($FolderNum);
 		}
-
+		echo "Reached here";
 		//Time to compress the image
 		$destinationURL = $FolderNum . "/" . $ID % 100 . ".jpg";
+		//echo $FolderNum . $ID . $destinationURL;		
+		
 		$filename = compress_image($_FILES["file"]["tmp_name"], $destinationURL, 80);
-		$ret = generate_image_thumbnail($destinationURL, $FolderNum . "/" . $ID % 100 . "_thumb.jpg" )
+		
+		echo $destinationURL;
+		$ret = generate_image_thumbnail($destinationURL, $FolderNum . "/" . $ID % 100 . "_thumb.jpg" );
 		//move_uploaded_file($_FILES["file"]["tmp_name"], $destinationURL);
 
 		mysqli_close($con);
@@ -108,16 +115,16 @@ function compress_image($source_url, $destination_url, $quality)
 	$info = getimagesize($source_url);
 
 	if ($info['mime'] == 'image/jpeg')
-			$image = imagecreatefromjpeg($source_url);
+		$image = imagecreatefromjpeg($source_url);
 
 	elseif ($info['mime'] == 'image/gif')
-			$image = imagecreatefromgif($source_url);
+		$image = imagecreatefromgif($source_url);
 
-		elseif ($info['mime'] == 'image/png')
+	elseif ($info['mime'] == 'image/png')
     		$image = imagecreatefrompng($source_url);
 
 	imagejpeg($image, $destination_url, $quality);
-	
+	imagedestroy($image);
 	return $destination_url;
 }
 /*
