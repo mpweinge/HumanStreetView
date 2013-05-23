@@ -1,4 +1,4 @@
-\<?php
+<?php
 
 if ($_FILES["file"]["error"] > 0)
 { 
@@ -41,15 +41,21 @@ else
 		print_r($count);
 		$ID = intval($count["COUNT(*)"]);
 		$FolderNum = floor($ID / 100);
+
 		if (is_dir($FolderNum))
 		{
-			move_uploaded_file($_FILES["file"]["tmp_name"], $FolderNum . "/" . $ID % 100);
 		}
 		else
 		{
 			mkdir($FolderNum);
-			move_uploaded_file($_FILES["file"]["tmp_name"], $FolderNum . "/" . $ID % 100);
 		}
+
+		//Time to compress the image
+		$destinationURL = $FolderNum . "/" . $ID % 100 . ".jpg";
+		$filename = compress_image($_FILES["file"]["tmp_name"], $destinationURL, 80);
+		$ret = generate_image_thumbnail($destinationURL, $FolderNum . "/" . $ID % 100 . "_thumb.jpg" )
+		//move_uploaded_file($_FILES["file"]["tmp_name"], $destinationURL);
+
 		mysqli_close($con);
 	}
 }
@@ -95,6 +101,71 @@ function gps2Num($coordPart)
     return $parts[0];
 
   return floatval($parts[0]) / floatval($parts[1]);
+}
+
+function compress_image($source_url, $destination_url, $quality) 
+{
+	$info = getimagesize($source_url);
+
+	if ($info['mime'] == 'image/jpeg')
+			$image = imagecreatefromjpeg($source_url);
+
+	elseif ($info['mime'] == 'image/gif')
+			$image = imagecreatefromgif($source_url);
+
+		elseif ($info['mime'] == 'image/png')
+    		$image = imagecreatefrompng($source_url);
+
+	imagejpeg($image, $destination_url, $quality);
+	
+	return $destination_url;
+}
+/*
+ * PHP function to resize an image maintaining aspect ratio
+ * http://salman-w.blogspot.com/2008/10/resize-images-using-phpgd-library.html
+ *
+ * Creates a resized (e.g. thumbnail, small, medium, large)
+ * version of an image file and saves it as another file
+ */
+
+define('THUMBNAIL_IMAGE_MAX_WIDTH', 100);
+define('THUMBNAIL_IMAGE_MAX_HEIGHT', 100);
+
+function generate_image_thumbnail($source_image_path, $thumbnail_image_path)
+{
+    list($source_image_width, $source_image_height, $source_image_type) = getimagesize($source_image_path);
+    switch ($source_image_type) {
+        case IMAGETYPE_GIF:
+            $source_gd_image = imagecreatefromgif($source_image_path);
+            break;
+        case IMAGETYPE_JPEG:
+            $source_gd_image = imagecreatefromjpeg($source_image_path);
+            break;
+        case IMAGETYPE_PNG:
+            $source_gd_image = imagecreatefrompng($source_image_path);
+            break;
+    }
+    if ($source_gd_image === false) {
+        return false;
+    }
+    $source_aspect_ratio = $source_image_width / $source_image_height;
+    $thumbnail_aspect_ratio = THUMBNAIL_IMAGE_MAX_WIDTH / THUMBNAIL_IMAGE_MAX_HEIGHT;
+    if ($source_image_width <= THUMBNAIL_IMAGE_MAX_WIDTH && $source_image_height <= THUMBNAIL_IMAGE_MAX_HEIGHT) {
+        $thumbnail_image_width = $source_image_width;
+        $thumbnail_image_height = $source_image_height;
+    } elseif ($thumbnail_aspect_ratio > $source_aspect_ratio) {
+        $thumbnail_image_width = (int) (THUMBNAIL_IMAGE_MAX_HEIGHT * $source_aspect_ratio);
+        $thumbnail_image_height = THUMBNAIL_IMAGE_MAX_HEIGHT;
+    } else {
+        $thumbnail_image_width = THUMBNAIL_IMAGE_MAX_WIDTH;
+        $thumbnail_image_height = (int) (THUMBNAIL_IMAGE_MAX_WIDTH / $source_aspect_ratio);
+    }
+    $thumbnail_gd_image = imagecreatetruecolor($thumbnail_image_width, $thumbnail_image_height);
+    imagecopyresampled($thumbnail_gd_image, $source_gd_image, 0, 0, 0, 0, $thumbnail_image_width, $thumbnail_image_height, $source_image_width, $source_image_height);
+    imagejpeg($thumbnail_gd_image, $thumbnail_image_path, 90);
+    imagedestroy($source_gd_image);
+    imagedestroy($thumbnail_gd_image);
+    return true;
 }
 
 ?>
