@@ -135,9 +135,6 @@ function compress_image($source_url, $destination_url, $quality)
  * version of an image file and saves it as another file
  */
 
-define('THUMBNAIL_IMAGE_MAX_WIDTH', 100);
-define('THUMBNAIL_IMAGE_MAX_HEIGHT', 100);
-
 function generate_image_thumbnail($source_image_path, $thumbnail_image_path)
 {
     list($source_image_width, $source_image_height, $source_image_type) = getimagesize($source_image_path);
@@ -156,14 +153,22 @@ function generate_image_thumbnail($source_image_path, $thumbnail_image_path)
         return false;
     }
     $source_aspect_ratio = $source_image_width / $source_image_height;
+    //For now, set aspect ratio to 1
+    $source_aspect_ratio = 1;
+
     $thumbnail_aspect_ratio = THUMBNAIL_IMAGE_MAX_WIDTH / THUMBNAIL_IMAGE_MAX_HEIGHT;
-    if ($source_image_width <= THUMBNAIL_IMAGE_MAX_WIDTH && $source_image_height <= THUMBNAIL_IMAGE_MAX_HEIGHT) {
+    if ($source_image_width <= THUMBNAIL_IMAGE_MAX_WIDTH && $source_image_height <= THUMBNAIL_IMAGE_MAX_HEIGHT) 
+    {
         $thumbnail_image_width = $source_image_width;
         $thumbnail_image_height = $source_image_height;
-    } elseif ($thumbnail_aspect_ratio > $source_aspect_ratio) {
+    } 
+    elseif ($thumbnail_aspect_ratio > $source_aspect_ratio) 
+    {
         $thumbnail_image_width = (int) (THUMBNAIL_IMAGE_MAX_HEIGHT * $source_aspect_ratio);
         $thumbnail_image_height = THUMBNAIL_IMAGE_MAX_HEIGHT;
-    } else {
+    } 
+    else 
+    {
         $thumbnail_image_width = THUMBNAIL_IMAGE_MAX_WIDTH;
         $thumbnail_image_height = (int) (THUMBNAIL_IMAGE_MAX_WIDTH / $source_aspect_ratio);
     }
