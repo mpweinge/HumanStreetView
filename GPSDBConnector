@@ -1,0 +1,27 @@
+<?php
+header("Content-Type: text/plain");
+
+$myFile = "LogFile.log";
+$fh = fopen($myFile, 'w');
+
+$con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
+if (mysqli_connect_errno() )
+{
+	echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+else
+{
+	echo "Connected successfullly";
+	$query = "SELECT * FROM PHOTOS";
+	$results = mysqli_query($con, $query);
+	if ($results)
+	{
+		$LongData = array();
+		while ($row = $result->fetch_assoc())
+		{
+			array_push($Longdata, $row);
+		}
+		echo json_encode($LongData);
+	}
+}
+?>
