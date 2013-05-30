@@ -7,12 +7,20 @@
 //
 
 #import "StatAppDelegate.h"
+#import "StatViewController.h"
 
 @implementation StatAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
+    //self.rootViewController = [[StatViewController alloc] initWithNibName:@"StatViewController" bundle:nil];
+    
+    //UINavigationController * controller = [[UINavigationController alloc]initWithRootViewController:self.rootViewController];
+
+
+  //  [self.window makeKeyAndVisible];
+    
     return YES;
 }
 							

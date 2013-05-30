@@ -113,6 +113,14 @@ enctype="multipart/form-data">
 <input type="file" name="file" id="file"><br>
 <input type="submit" name="submit" value="Submit">
 </form>
+<script> 
+  function PhotoCallback()
+  {
+    alert("Photo taken");
+  }
+</script>
+
+<button type="button" onclick="callNativeFunction('Photo', '', PhotoCallback)"> Test iOS Photo Launch? </button>
 
 <div id="MapWithMarkers" style="height:500px"></div>
 <script src="OpenLayers-2.12/OpenLayers.js"></script>

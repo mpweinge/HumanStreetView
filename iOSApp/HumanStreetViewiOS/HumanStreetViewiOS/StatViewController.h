@@ -10,6 +10,12 @@
 
 @interface StatViewController : UIViewController
  <UIWebViewDelegate>
+{
+    int _isTakingPhoto;
+    int _callbackID;
+}
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
+
+
 
 @end

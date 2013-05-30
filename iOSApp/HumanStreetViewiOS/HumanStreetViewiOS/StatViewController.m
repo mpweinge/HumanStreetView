@@ -7,6 +7,7 @@
 //
 
 #import "StatViewController.h"
+#import "CameraViewController.h"
 
 @interface StatViewController ()
 
@@ -21,9 +22,22 @@
     NSString * fullURL = @"http://99.249.128.170/HumanStreetView/TrailsIndex.html";
     NSURL * url = [NSURL URLWithString:fullURL];
     NSURLRequest * requestObj = [NSURLRequest requestWithURL:url];
-    [[SBJSON new]]
+
     [_webView loadRequest:requestObj];
     _webView.delegate = self;
+    
+    _isTakingPhoto = 0;
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    if (_isTakingPhoto == 1)
+    {
+        NSString* callback = @"NativeBridge.resultForCallback(";
+        callback = [callback stringByAppendingString:[@(_callbackID) description]];
+        callback = [callback stringByAppendingString:@", '');"];
+        [self ExecJavascriptFunction:callback];
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -57,9 +71,21 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
                                   stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         
         NSError *e = nil;
-        NSArray *jsonArray = [NSJSONSerialization JSONObjectWithData: [argsAsString dataUsingEncoding:NSUTF8StringEncoding] options: NSJSONReadingMutableContainers error: &e];
+        id jsonObject = [NSJSONSerialization JSONObjectWithData: [argsAsString dataUsingEncoding:NSUTF8StringEncoding] options: NSJSONReadingMutableContainers error: &e];
         
+        if ([jsonObject isKindOfClass:[NSArray class]]) {
+            NSLog(@"its an array!");
+            NSArray *jsonArray = (NSArray *)jsonObject;
+            NSLog(@"jsonArray - %@",jsonArray);
+        }
+        else {
+            NSLog(@"its probably a dictionary");
+            NSDictionary *jsonDictionary = (NSDictionary *)jsonObject;
+            NSLog(@"jsonDictionary - %@",jsonDictionary);
+        }
         
+        NSArray* jsonArray = (NSArray*)jsonObject;
+        _callbackID = callbackId;
         [self handleCall:function callbackId:callbackId args:jsonArray];
         
         return NO;
@@ -75,6 +101,14 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
 - (void)handleCall:(NSString*)functionName callbackId:(int)callbackId args:(NSArray*)args
 {
     //eventually maintain a dictionary of functions here
+    _isTakingPhoto = 1;
+    [self TakePhoto];
+}
+
+- (void) TakePhoto
+{
+    CameraViewController* newCamView = [[CameraViewController alloc] init];
+    [self.navigationController pushViewController:newCamView animated:YES];
 }
 
 - (void)myObjectiveCFunction {
