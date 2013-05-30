@@ -13,6 +13,7 @@ var NativeBridge =
     	return;
     
     //else
+    alert("Message:" + callbackId);
     callback.apply(null,resultArray);
   },
   
