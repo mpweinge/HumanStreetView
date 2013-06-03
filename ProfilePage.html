@@ -5,44 +5,55 @@
 $(document).ready(function()
      {
 		$.ajax({
+          type: "GET",
+          url: "Login.php?submit=GetLogin",
+          success: function(msg)
+          {
+            document.getElementById("LoginDiv").innerHTML = msg;    
+          	  alert(msg); 
+            if (msg.indexOf("Logged in") !== -1)
+            {
+          			$.ajax({
+          				type: "GET",
+          				url:"FriendConnector.php?query=UsernameToID&args=mikey",
+          				success: function(msg)
+          				{
+          					var ID = msg;
+      							alert(msg);
+      							$.ajax({
+      								type: "GET",
+      								url:"FriendConnector.php?query=GetFriendsList&args=" + ID,
+      								success: function(msg)
+      								{
+      									alert(msg);
+      									document.getElementById("FriendsList").innerHTML = msg;
+      								}
+      							})
+                    $.ajax({
                       type: "GET",
-                      url: "Login.php?submit=GetLogin",
+                      url:"AwardConnector.php?query=GetAwards&args="+ID,
                       success: function(msg)
                       {
-                        document.getElementById("LoginDiv").innerHTML = msg;    
-                      	  alert(msg); 
-                        if (msg.indexOf("Logged in") !== -1)
-                        {
-                			$.ajax({
-                				type: "GET",
-                				url:"FriendConnector.php?query=UsernameToID&args=mikey",
-                				success: function(msg)
-                				{
-                					var ID = msg;
-							alert(msg);
-							$.ajax({
-								type: "GET",
-								url:"FriendConnector.php?query=GetFriendsList&args=" + ID,
-								success: function(msg)
-								{
-									alert(msg);
-									document.getElementById("FriendsList").innerHTML = msg;
-								}
-							})
-                				}
-                			})
-                			
-                        }                    
-                      },
-                      error: function(jqXHR, textStatus, errorThrown) 
-                      {
-                        alert("failed" + jqXHR + textStatus + errorThrown);
+                        alert(msg);
+                        document.getElementById("AwardsList").innerHTML = msg;
                       }
-                     });
+                    })
+          				}
+          			})
+              }                    
+          },
+          error: function(jqXHR, textStatus, errorThrown) 
+          {
+            alert("failed" + jqXHR + textStatus + errorThrown);
+          }
+         });
         });
 </script>
-
+<p1> Logged in as </p1>
 <p1 id="LoginDiv"></p1>
+<p1> Friends List </p1>
 <p1 id="FriendsList"></p1>
+<p1> Awards List </p1>
+<p1 id="AwardsList"></p1>
 
 </html>
