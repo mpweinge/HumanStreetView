@@ -28,43 +28,60 @@ else
 	$LATITUDE = getGPS($exif['GPS']['GPSLatitude']);;
 	print_r($LONGITUDE);
 	print_r($LATITUDE);
-	$con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
-	//Check connection
-	if (mysqli_connect_errno() )
-	{
-		echo "Failed to connect to MySQL: " . mysqli_connect_error();
-	}
-	else
-	{
-		mysqli_query($con, "INSERT INTO PHOTOS VALUES(".$LONGITUDE['degrees'].", ".$LONGITUDE['minutes'].", ".$LONGITUDE['seconds'].", ".$LATITUDE['degrees'].", ".$LATITUDE['minutes'].", ".$LATITUDE['seconds'].", 0, 0, 0, 'TEST')");
-		//mysqli_query($con, "INSERT INTO PHOTOS VALUES(0, 0, 0, 0, 0, 0, 0, 0, 0, 'LOL')");
-		$query = "SELECT COUNT(*) FROM PHOTOS;";
-		$result = mysqli_query($con, $query);
-		$count = mysqli_fetch_assoc($result);
-		print_r($count);
-		$ID = intval($count["COUNT(*)"]);
-		$FolderNum = floor($ID / 100);
 
-		if (is_dir($FolderNum))
-		{
-		}
-		else
-		{
-			mkdir($FolderNum);
-		}
-		echo "Reached here";
-		//Time to compress the image
-		$destinationURL = $FolderNum . "/" . $ID % 100 . ".jpg";
-		//echo $FolderNum . $ID . $destinationURL;		
-		
-		$filename = compress_image($_FILES["file"]["tmp_name"], $destinationURL, 80);
-		
-		echo $destinationURL;
-		$ret = generate_image_thumbnail($destinationURL, $FolderNum . "/" . $ID % 100 . "_thumb.jpg" );
-		//move_uploaded_file($_FILES["file"]["tmp_name"], $destinationURL);
+  //Get the trail the thing came from
+  // set your API key here
+  $api_key = "AIzaSyDArYdyABFtER6IWwrfnsQq8jwd8JFt1po";
+  // format this string with the appropriate latitude longitude
+  $url = 'http://maps.google.com/maps/geo?q='.$LONGITUDE .','.$LATITUDE. '&output=json&sensor=true_or_false&key=' . $api_key;
+  // make the HTTP request
+  $data = @file_get_contents($url);
+  // parse the json response
+  $jsondata = json_decode($data,true);
+  // if we get a placemark array and the status was good, get the addres
+  if(is_array($jsondata )&& $jsondata ['Status']['code']==200)
+  {
+        print_r($jsondata);
+        $addr = $jsondata['results'][0]['formatted_address'];
+        print_r($addr);
+        $con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
+        //Check connection
+        if (mysqli_connect_errno() )
+        {
+          echo "Failed to connect to MySQL: " . mysqli_connect_error();
+        }
+        else
+        {
+          mysqli_query($con, "INSERT INTO PHOTOS VALUES(".$LONGITUDE['degrees'].", ".$LONGITUDE['minutes'].", ".$LONGITUDE['seconds'].", ".$LATITUDE['degrees'].", ".$LATITUDE['minutes'].", ".$LATITUDE['seconds'].", 0, 0, 0, 'TEST')");
+          //mysqli_query($con, "INSERT INTO PHOTOS VALUES(0, 0, 0, 0, 0, 0, 0, 0, 0, 'LOL')");
+          $query = "SELECT COUNT(*) FROM PHOTOS;";
+          $result = mysqli_query($con, $query);
+          $count = mysqli_fetch_assoc($result);
+          print_r($count);
+          $ID = intval($count["COUNT(*)"]);
+          $FolderNum = floor($ID / 100);
 
-		mysqli_close($con);
-	}
+          if (is_dir($FolderNum))
+          {
+          }
+          else
+          {
+            mkdir($FolderNum);
+          }
+          echo "Reached here";
+          //Time to compress the image
+          $destinationURL = $FolderNum . "/" . $ID % 100 . ".jpg";
+          //echo $FolderNum . $ID . $destinationURL;    
+          
+          $filename = compress_image($_FILES["file"]["tmp_name"], $destinationURL, 80);
+          
+          echo $destinationURL;
+          $ret = generate_image_thumbnail($destinationURL, $FolderNum . "/" . $ID % 100 . "_thumb.jpg" );
+          //move_uploaded_file($_FILES["file"]["tmp_name"], $destinationURL);
+
+          mysqli_close($con);
+        }
+  }
 }
 
 
