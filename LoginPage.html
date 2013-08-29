@@ -143,6 +143,24 @@
               }
              });
   }
+
+  function Register(username, password, name, email)
+  {
+    $.ajax({
+              type: "POST",
+              url: "Login.php",
+              data:{submit:"Register", username: username, password: password,
+              name:name, email:email},
+              success: function(msg)
+              {
+                  alert(msg);
+              },
+              error: function(jqXHR, textStatus, errorThrown) 
+              {
+                alert("failed" + jqXHR + textStatus + errorThrown);
+              }
+             });
+  }
 </script>
 
 </body>

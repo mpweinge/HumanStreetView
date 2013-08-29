@@ -119,9 +119,9 @@ else if($_POST['submit']=='Register')
     // If the Register form has been submitted
     $err = array();
 
-    if(strlen($_POST['username'])<4 || strlen($_POST['username'])>32)
+    if(strlen($_POST['username'])<7 || strlen($_POST['username'])>32)
     {
-        $err[]='Your username must be between 3 and 32 characters!';
+        $err[]='Your username must be between 6 and 32 characters!';
     }
 
     if(preg_match('/[^a-z0-9\-\_\.]+/i',$_POST['username']))
@@ -129,12 +129,18 @@ else if($_POST['submit']=='Register')
         $err[]='Your username contains invalid characters!';
     }
 
-    //if(!checkEmail($_POST['email']))
-    //{
-    //    $err[]='Your email is not valid!';
-    //}
+    //Check to see if username exists
+    $_POST['username'] = mysql_real_escape_string($_POST['username']);
+    $con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
 
-    if(!count($err))
+    $query = "SELECT * FROM tz_members WHERE usr='{$_POST['username']}'");
+    $row = mysqli_fetch_assoc(mysqli_query($con, $query));
+
+    if ($row['usr'])
+    {
+        $err[] = 'Username already exists';
+    }
+    else if(!count($err))
     {
         // If there are no errors
         $pass = substr(md5($_SERVER['REMOTE_ADDR'].microtime().rand(1,100000)),0,6);
@@ -185,7 +191,7 @@ else if($_POST['submit']=='Register')
     {
         $_SESSION['msg']['reg-err'] = implode('<br />',$err);
     }
-
+    print_r($err);
     exit;
 }
 else if ($_POST['submit'] == 'ChangePass')
