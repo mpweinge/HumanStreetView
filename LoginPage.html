@@ -122,7 +122,7 @@
     $.ajax({
               type: "POST",
               url: "Login.php",
-              data:{submit:"Login", Login: username, password : password},
+              data:{submit:"Login", username: username, password: password},
               success: function(msg)
               {
                 if (msg.indexOf("Logged in") !== -1)
