@@ -1,0 +1,149 @@
+<html>
+<body>
+<script src="jquery-1.9.1.min.js"></script>
+<script src="iOSNativeBridge.js"></script>
+<div id="EntryButtons">
+<button id="LoginButton" onClick="javascript:showLoginInputs(event);">Oh herro there, would you like to login?</button>
+<button id="RegisterButton" onClick="javascript:showRegisterInputs(event);"> No account? Register prease </button>
+</div>
+<div id="LoginText">
+
+<p style="display:inline;" id="NameLabel">Name</p>
+<input type="text" value="" style="width:200px;" id="NameTxt"></input>
+</br>
+<p style="display:inline; " id="EmailLabel">Email</p>
+<input type="text" value="" style="width:200px; " id="EmailTxt"></input>
+</br>
+<p style="display:inline; " id="UsernameLabel">Username </p>
+<input type="text" value="" style="width:200px; " id="UsernameTxt"></input>
+</br>
+<p style="display:inline; " id="PasswordLabel">Password </p>
+<input type="text" value="" style="width:200px; " id="PasswordTxt"></input>
+<button id="GoButton" onclick="javascript:GoClicked();">Go</button>
+</div>
+<script type ="text/javascript">
+  var LoginShowing = false;
+  var RegisterShowing = false;
+  $('document').ready(function()
+  {
+        $("#UsernameLabel").hide();
+        $("#PasswordLabel").hide();
+        $("#NameLabel").hide();
+        $("#EmailLabel").hide();
+        $("#UsernameTxt").hide();
+        $("#PasswordTxt").hide();
+        $("#NameTxt").hide();
+        $("#EmailTxt").hide();
+        $("#GoButton").hide();
+  });
+
+  $('body').click(function(e)
+  {
+      if(( $(e.target).parents().index($("#LoginText")) >= 0) || 
+        ( $(e.target).parents().index($("#EntryButtons")) >= 0)
+        )
+      {
+          return true;            
+      }
+      else
+      {
+        if (LoginShowing)
+        {
+          removeLoginInputs();
+          LoginShowing = false;
+        }  
+       else if (RegisterShowing)
+       {
+
+        removeRegisterInputs();
+        RegisterShowing = false;
+       }  
+      }
+  });
+
+  function GoClicked()
+  {
+    if (LoginShowing)
+    {
+      Login(document.getElementById('UsernameTxt').value, document.getElementById('PasswordTxt').value);
+    }
+  }
+
+  function showLoginInputs(event)
+  {
+      $("#UsernameLabel").show();
+      $("#PasswordLabel").show();
+      $("#UsernameTxt").show();
+      $("#PasswordTxt").show();
+      $("#GoButton").show();
+      LoginShowing = true; 
+      //event.stopPropogation();
+  }
+
+  function removeLoginInputs()
+  {
+      $("#UsernameLabel").hide();
+      $("#PasswordLabel").hide();
+      $("#UsernameTxt").hide();
+      $("#PasswordTxt").hide();
+      $("#GoButton").hide();
+  }
+
+  function showRegisterInputs(event)
+  {
+      $("#UsernameLabel").show();
+      $("#PasswordLabel").show();
+      $("#NameLabel").show();
+      $("#EmailLabel").show();
+      $("#UsernameTxt").show();
+      $("#PasswordTxt").show();
+      $("#NameTxt").show();
+      $("#EmailTxt").show();
+      $("#GoButton").show();
+      RegisterShowing = true;
+      //event.stopPropogation();
+  }
+
+  function removeRegisterInputs()
+  {
+      $("#UsernameLabel").hide();
+      $("#PasswordLabel").hide();
+      $("#NameLabel").hide();
+      $("#EmailLabel").hide();
+      $("#UsernameTxt").hide();
+      $("#PasswordTxt").hide();
+      $("#NameTxt").hide();
+      $("#EmailTxt").hide();
+      $("#GoButton").hide();
+  }
+
+  function Login(username, password)
+  {
+    $.ajax({
+              type: "GET",
+              url: "Login.php?submit=Login&username=" + username + "&password=" + password,
+              success: function(msg)
+              {
+                document.getElementById("LogInCheck").innerHTML = msg;    
+                if (msg.indexOf("Logged in") !== -1)
+                {
+                   //We have successfully logged in
+                   alert("Logged in successfully");
+                   alert(msg);
+                }                    
+                else
+                {
+                  //Error
+                  alert(msg);
+                }
+              },
+              error: function(jqXHR, textStatus, errorThrown) 
+              {
+                alert("failed" + jqXHR + textStatus + errorThrown);
+              }
+             });
+  }
+</script>
+
+</body>
+</html>
