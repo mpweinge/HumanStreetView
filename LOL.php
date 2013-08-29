@@ -1,4 +1,4 @@
-<?php
+	<?php
 
 define('THUMBNAIL_IMAGE_MAX_WIDTH', 100);
 define('THUMBNAIL_IMAGE_MAX_HEIGHT', 100);
@@ -24,26 +24,35 @@ if (!$exif || $exif['GPS']['GPSLatitude'] =='' ||
 }
 else
 {
+	print_r($exif['GPS']);
 	$LONGITUDE = getGPS($exif['GPS']['GPSLongitude']);
 	$LATITUDE = getGPS($exif['GPS']['GPSLatitude']);;
 	print_r($LONGITUDE);
 	print_r($LATITUDE);
-
+$LongitudeAct = ($LONGITUDE['minutes']*60 + $LONGITUDE['seconds'])/3600+$LONGITUDE['degrees'];
+if ($exif['GPS']['GPSLatitudeRef'] == 'S')
+	$LongitudeAct = -$LongitudeAct;
+if ($exif['GPS']['GPSLongitudeRef'] == 'W')
+	$LongitudeAct = -$LongitudeAct;
+$LatitudeAct = ($LATITUDE['minutes']*60 + $LATITUDE['seconds'])/3600 + $LATITUDE['degrees'];
   //Get the trail the thing came from
   // set your API key here
   $api_key = "AIzaSyDArYdyABFtER6IWwrfnsQq8jwd8JFt1po";
   // format this string with the appropriate latitude longitude
-  $url = 'http://maps.google.com/maps/geo?q='.$LONGITUDE .','.$LATITUDE. '&output=json&sensor=true_or_false&key=' . $api_key;
+  $url = 'http://maps.google.com/maps/api/geocode/json?latlng='.$LatitudeAct .','.$LongitudeAct. '&sensor=false';
   // make the HTTP request
   $data = @file_get_contents($url);
   // parse the json response
   $jsondata = json_decode($data,true);
+	//print_r($jsondata);
   // if we get a placemark array and the status was good, get the addres
-  if(is_array($jsondata )&& $jsondata ['Status']['code']==200)
+  if(is_array($jsondata )&& $jsondata['status']=="OK")
   {
-        print_r($jsondata);
-        $addr = $jsondata['results'][0]['formatted_address'];
-        print_r($addr);
+	echo "\n In Here";
+        $addr = $jsondata['results'][0]['address_components'][0]['long_name'];
+//      print_r($jsondata['results']);
+//	print_r($jsondata['results'][0]);
+	print_r($addr);
         $con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
         //Check connection
         if (mysqli_connect_errno() )
