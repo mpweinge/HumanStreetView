@@ -3,6 +3,9 @@
 define('THUMBNAIL_IMAGE_MAX_WIDTH', 100);
 define('THUMBNAIL_IMAGE_MAX_HEIGHT', 100);
 
+$_SESSION['TrailList'] = Array();
+GetListOfTrails();
+
 if ($_FILES["file"]["error"] > 0)
 { 
   echo "Error: " . $_FILES["file"]["error"] . "<br>";
@@ -61,8 +64,17 @@ $LatitudeAct = ($LATITUDE['minutes']*60 + $LATITUDE['seconds'])/3600 + $LATITUDE
         }
         else
         {
-          mysqli_query($con, "INSERT INTO PHOTOS VALUES(".$LONGITUDE['degrees'].", ".$LONGITUDE['minutes'].", ".$LONGITUDE['seconds'].", ".$LATITUDE['degrees'].", ".$LATITUDE['minutes'].", ".$LATITUDE['seconds'].", 0, 0, 0, 'TEST')");
-          //mysqli_query($con, "INSERT INTO PHOTOS VALUES(0, 0, 0, 0, 0, 0, 0, 0, 0, 'LOL')");
+          $TrailID = GetTrailID($addr);
+          if ($TrailID == -1)
+          {
+            InsertTrailName($addr);
+            $TrailID = GetTrailID($addr);
+          }
+          mysqli_query($con, "INSERT INTO PHOTOS VALUES(".$LONGITUDE['degrees'].", "
+            .$LONGITUDE['minutes'].", ".$LONGITUDE['seconds'].", "
+            .$LATITUDE['degrees'].", ".$LATITUDE['minutes'].", "
+            .$LATITUDE['seconds'].", 0, " . $TrailID . ", 0, 'TEST')");
+          
           $query = "SELECT COUNT(*) FROM PHOTOS;";
           $result = mysqli_query($con, $query);
           $count = mysqli_fetch_assoc($result);
@@ -204,6 +216,60 @@ function generate_image_thumbnail($source_image_path, $thumbnail_image_path)
     imagedestroy($source_gd_image);
     imagedestroy($thumbnail_gd_image);
     return true;
+}
+
+function GetListOfTrails()
+{
+  $con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
+  //Check connection
+  if (mysqli_connect_errno() )
+  {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+  }
+  else
+  {
+    $result = mysqli_query($con, "SELECT * FROM TrailNames");
+
+    while ($SingleTrail = mysqli_fetch_assoc($relationships))
+    {
+      //print_r($SingleRelationship);
+      $_SESSION['TrailList'][$SingleTrail['TrailName']] = $SingleTrail['TrailID'];
+    }
+  }
+}
+
+function GetTrailID($TrailName)
+{
+      if (array_key_exists($TrailName, $_SESSION['TrailList']) 
+      {
+          echo "The 'first' element is in the array";
+          return $_SESSION['TrailList'][$TrailName];
+      }
+      else
+      {
+        return -1;
+      }
+}
+
+function InsertTrailName($TrailName)
+{
+  $con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
+  //Check connection
+  if (mysqli_connect_errno() )
+  {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+  }
+  else
+  {
+    $result = mysqli_query($con, "INSERT INTO TRAILNAMES VALUES(0," . $TrailName .");");
+
+    GetListOfTrails();
+  }
+}
+
+function SendListOfTrailsToJavascript()
+{
+  echo json_encode($_SESSION['TrailList']);
 }
 
 ?>
