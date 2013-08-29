@@ -11,6 +11,8 @@ session_set_cookie_params(2*7*24*60*60);
 
 session_start();
 
+print_r($_POST);
+
 if($_SESSION['id'] && !isset($_COOKIE['tzRemember']) && !$_SESSION['rememberMe'])
 {
     // If you are logged in, but you don't have the tzRemember cookie (browser restart)

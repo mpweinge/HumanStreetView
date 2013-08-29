@@ -120,8 +120,9 @@
   function Login(username, password)
   {
     $.ajax({
-              type: "GET",
-              url: "Login.php?submit=Login&username=" + username + "&password=" + password,
+              type: "POST",
+              url: "Login.php",
+              data:{Login: username, password : password},
               success: function(msg)
               {
                 if (msg.indexOf("Logged in") !== -1)
