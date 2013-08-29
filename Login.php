@@ -100,7 +100,7 @@ else if($_POST['submit']=='Login')
             setcookie('loginCookie', serialize($LoginData));
 
             // We create the tzRemember cookie
-            echo "Logged in as " . $LoginInfo['username'];
+            echo "Logged in as " . $LoginData['username'];
         }
         else $err[]='Wrong username and/or password!';
     }
