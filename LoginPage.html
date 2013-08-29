@@ -67,6 +67,11 @@
     {
       Login(document.getElementById('UsernameTxt').value, document.getElementById('PasswordTxt').value);
     }
+    else if (RegisterShowing)
+    {
+      Register(document.getElementById('UsernameTxt').value, document.getElementById('PasswordTxt').value, document.getElementById('NameTxt').value,
+        document.getElementById('EmailTxt').value);
+    }
   }
 
   function showLoginInputs(event)
