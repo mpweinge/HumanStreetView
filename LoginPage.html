@@ -124,7 +124,6 @@
               url: "Login.php?submit=Login&username=" + username + "&password=" + password,
               success: function(msg)
               {
-                document.getElementById("LogInCheck").innerHTML = msg;    
                 if (msg.indexOf("Logged in") !== -1)
                 {
                    //We have successfully logged in
