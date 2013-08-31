@@ -95,9 +95,11 @@ $LatitudeAct = ($LATITUDE['minutes']*60 + $LATITUDE['seconds'])/3600 + $LATITUDE
           //Time to compress the image
           $destinationURL = $FolderNum . "/" . $ID % 100 . ".jpg";
           //echo $FolderNum . $ID . $destinationURL;    
-          
-          mysqli_query($con, "INSERT INTO PhotoInformation VALUES(".$LatitudeAct.", "
-           . $LongitudeAct . ", 0, " . $TrailID . ", 0," . $destinationURL . ")");
+          $query = "INSERT INTO PhotoInformation VALUES(".$LatitudeAct.", "
+           . $LongitudeAct . ", 0, " . $TrailID . ", 0," . $destinationURL . ")";
+          echo $query;
+
+          mysqli_query($con, $query);
 
           $filename = compress_image($_FILES["file"]["tmp_name"], $destinationURL, 80);
           
