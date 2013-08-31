@@ -11,7 +11,8 @@
       src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDArYdyABFtER6IWwrfnsQq8jwd8JFt1po&sensor=false">
     </script>
 <script src="jquery-1.9.1.min.js"></script>
-    <script type="text/javascript">
+
+<script type="text/javascript">
     var geocoder;
     var infowindow = new google.maps.InfoWindow();
     var map;
@@ -43,18 +44,18 @@
               success: function(msg)
               {
                 var GPSInf = JSON.parse(msg);
-		var TSelector = document.getElementById("TrailSelector");
-		var TrailIDArray = new Array();
-	
-		for (var i = 0; i < GPSInf.length; i++)
-		{
-			if ($.inArray(GPSInf[i]["TRAILID"], TrailIDArray) == -1) {
-				var option = document.createElement("option");
-				option.text = GPSInf[i]["TRAILID"];
-				TSelector.add(option, null);
-				TrailIDArray.push(GPSInf[i]["TRAILID"]);
-			}
-		}
+            		var TSelector = document.getElementById("TrailSelector");
+            		var TrailIDArray = new Array();
+            	
+            		for (var i = 0; i < GPSInf.length; i++)
+            		{
+            			if ($.inArray(GPSInf[i]["TRAILID"], TrailIDArray) == -1) {
+            				var option = document.createElement("option");
+            				option.text = GPSInf[i]["TRAILID"];
+            				TSelector.add(option, null);
+            				TrailIDArray.push(GPSInf[i]["TRAILID"]);
+            			}
+            		}
               },
               error: function(jqXHR, textStatus, errorThrown) 
               {
@@ -87,11 +88,50 @@
         });
       }
 
+      function GetTrailNames(ArrayOfIDs)
+      {
+
+      }
+
+      function GetGPSOfPhotosAtTrail(ID)
+      {
+        $.ajax({
+              type: "GET",
+              url: "Photos.php?query=GetGPSOnTrail&trail=" + ID,
+              success: function(msg)
+              {
+                var GPSInf = JSON.parse(msg);
+                var TSelector = document.getElementById("TrailSelector");
+                var TrailIDArray = new Array();
+              
+                for (var i = 0; i < GPSInf.length; i++)
+                {
+                  //Add this information to map
+                  //Reconstruct the lat, long variables
+                  var lat = (GPSInf[i]['LATMINUTE'] * 60 + GPSInf[i]['LATSECOND'])/3600 + GPSInf[i]['LATDEGREE'];
+                  var lng = (GPSInf[i]['LONGMINUTE'] * 60 + GPSInf[i]['LONGSECOND'])/3600 + GPSInf[i]['LONGDEGREE'];
+                  
+                  var latlng = new google.maps.LatLng(lat, lng);
+                  marker = new google.maps.Marker
+                  ({
+                    position: latlng,
+                    map: map
+                  });
+                }
+              },
+              error: function(jqXHR, textStatus, errorThrown) 
+              {
+                alert("failed" + jqXHR + textStatus + errorThrown);
+              }
+             });
+      }
+
       function UploadPhoto()
       {
 
       }
     </script>
+
   </head>
   <body>
     <div id="TitleBar">
