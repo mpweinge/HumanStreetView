@@ -21,7 +21,8 @@ function ReadGPSInformationFromDB()
 function GetGpsInformation($TrailID)
 {
 	$con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
-	$query = "SELECT * FROM PHOTOS WHERE TRAILID=".TrailID;
+	$query = "SELECT * FROM PHOTOS WHERE TRAILID=".$TrailID;
+	$results = mysqli_query($con, $query);
 	if ($results)
 	{	
 		$LongData = array();

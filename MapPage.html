@@ -26,13 +26,13 @@
         geocoder = new google.maps.Geocoder();
         map = new google.maps.Map(document.getElementById("map-canvas"),
             mapOptions);
-        var image = 'FlagIconTest.png';
-        var myLatLng = new google.maps.LatLng(-34.397, 150.644);
-        var beachMarker = new google.maps.Marker({
-          position:myLatLng,
-          map:map,
-          icon:image
-        });
+        //var image = 'FlagIconTest.png';
+        //var myLatLng = new google.maps.LatLng(-34.397, 150.644);
+        //var beachMarker = new google.maps.Marker({
+//          position:myLatLng,
+ //         map:map,
+  //        icon:image
+   //     });
       }
       google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -108,14 +108,16 @@
                 {
                   //Add this information to map
                   //Reconstruct the lat, long variables
-                  var lat = (GPSInf[i]['LATMINUTE'] * 60 + GPSInf[i]['LATSECOND'])/3600 + GPSInf[i]['LATDEGREE'];
-                  var lng = (GPSInf[i]['LONGMINUTE'] * 60 + GPSInf[i]['LONGSECOND'])/3600 + GPSInf[i]['LONGDEGREE'];
+                  var lat = (+GPSInf[i]['LATMINUTE'] * 60 + +GPSInf[i]['LATSECOND'])/3600 + +GPSInf[i]['LATDEGREE'];
+                  var lng = (+GPSInf[i]['LONGMINUTE'] * 60 + +GPSInf[i]['LONGSECOND'])/3600 + +GPSInf[i]['LONGDEGREE'];
                   
-                  var latlng = new google.maps.LatLng(lat, lng);
-                  marker = new google.maps.Marker
+                  var latlng = new google.maps.LatLng(lng.toFixed(3), lat.toFixed(3));
+                var image = "FlagIconTest.png";  
+		var marker = new google.maps.Marker
                   ({
                     position: latlng,
-                    map: map
+                    map: map,
+			icon:image
                   });
                 }
               },
@@ -137,7 +139,7 @@
     <div id="TitleBar">
       <p> Welcome to TrailView</p>
       <p style="display:inline"> Mikey's Profile </p> 
-      <button onclick="javascript:GeocodeReversePhotos()"> Load Image Locations</button>
+      <button onclick="javascript:{GeocodeReversePhotos(); GetGPSOfPhotosAtTrail(5); }"> Load Image Locations</button>
       <form action="LOL.php" method="post" enctype="multipart/form-data">
       <label for="file">Filename:</label>
       <input type="file" name="file" id="file"><br>
