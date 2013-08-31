@@ -1,10 +1,14 @@
-	<?php
+<?php
+session_name('TrailNames');
 
+session_start();
 define('THUMBNAIL_IMAGE_MAX_WIDTH', 100);
 define('THUMBNAIL_IMAGE_MAX_HEIGHT', 100);
 
 $_SESSION['TrailList'] = Array();
 GetListOfTrails();
+
+print_r($_SESSION['TrailList']);
 
 if ($_FILES["file"]["error"] > 0)
 { 
@@ -27,11 +31,11 @@ if (!$exif || $exif['GPS']['GPSLatitude'] =='' ||
 }
 else
 {
-	print_r($exif['GPS']);
+//	print_r($exif['GPS']);
 	$LONGITUDE = getGPS($exif['GPS']['GPSLongitude']);
-	$LATITUDE = getGPS($exif['GPS']['GPSLatitude']);;
-	print_r($LONGITUDE);
-	print_r($LATITUDE);
+	$LATITUDE = getGPS($exif['GPS']['GPSLatitude']);
+//	print_r($LONGITUDE);
+//	print_r($LATITUDE);
 $LongitudeAct = ($LONGITUDE['minutes']*60 + $LONGITUDE['seconds'])/3600+$LONGITUDE['degrees'];
 if ($exif['GPS']['GPSLatitudeRef'] == 'S')
 	$LongitudeAct = -$LongitudeAct;
@@ -51,11 +55,11 @@ $LatitudeAct = ($LATITUDE['minutes']*60 + $LATITUDE['seconds'])/3600 + $LATITUDE
   // if we get a placemark array and the status was good, get the addres
   if(is_array($jsondata )&& $jsondata['status']=="OK")
   {
-	echo "\n In Here";
+//	echo "\n In Here";
         $addr = $jsondata['results'][0]['address_components'][0]['long_name'];
 //      print_r($jsondata['results']);
 //	print_r($jsondata['results'][0]);
-	print_r($addr);
+//	print_r($addr);
         $con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
         //Check connection
         if (mysqli_connect_errno() )
@@ -65,6 +69,7 @@ $LatitudeAct = ($LATITUDE['minutes']*60 + $LATITUDE['seconds'])/3600 + $LATITUDE
         else
         {
           $TrailID = GetTrailID($addr);
+	echo $TrailID;
           if ($TrailID == -1)
           {
             InsertTrailName($addr);
@@ -229,10 +234,11 @@ function GetListOfTrails()
   else
   {
     $result = mysqli_query($con, "SELECT * FROM TrailNames");
-
-    while ($SingleTrail = mysqli_fetch_assoc($relationships))
+	print_r($result);
+    while ($SingleTrail = mysqli_fetch_assoc($result))
     {
       //print_r($SingleRelationship);
+	print_r($SingleTrail);
       $_SESSION['TrailList'][$SingleTrail['TrailName']] = $SingleTrail['TrailID'];
     }
   }
@@ -240,7 +246,7 @@ function GetListOfTrails()
 
 function GetTrailID($TrailName)
 {
-      if (array_key_exists($TrailName, $_SESSION['TrailList']) 
+      if (array_key_exists($TrailName, $_SESSION['TrailList']) )
       {
           echo "The 'first' element is in the array";
           return $_SESSION['TrailList'][$TrailName];
@@ -253,6 +259,7 @@ function GetTrailID($TrailName)
 
 function InsertTrailName($TrailName)
 {
+	echo "Inserting Trail Name";
   $con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
   //Check connection
   if (mysqli_connect_errno() )
@@ -261,7 +268,7 @@ function InsertTrailName($TrailName)
   }
   else
   {
-    $result = mysqli_query($con, "INSERT INTO TRAILNAMES VALUES(0," . $TrailName .");");
+    $result = mysqli_query($con, "INSERT INTO TrailNames VALUES(0,'" . $TrailName ."');");
 
     GetListOfTrails();
   }
