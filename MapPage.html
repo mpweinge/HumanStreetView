@@ -14,19 +14,19 @@
 
 <script type="text/javascript">
 
-    $('TrailSelector').on('change', function (e) {
-        var optionSelected = $("option:selected", this);
-        var valueSelected = this.value;
+    function SelectedTrailChanged() {
+	var e = document.getElementById("TrailSelector");
+        var valueSelected = e.options[e.selectedIndex].value;;
 
         //Remove all markers
-        for (var i = 0; i < markers.count; i++)
+        for (var i = 0; i < markers.length; i++)
         {
           markers[i].setMap(null);
         }
         markers = [];
 
         GetGPSOfPhotosAtTrail(valueSelected);
-    });
+    }
 
     var geocoder;
     var infowindow = new google.maps.InfoWindow();
@@ -156,7 +156,7 @@
       <input type="file" name="file" id="file"><br>
       <input type="submit" name="submit" value="Submit">
       </form>
-      <select id="TrailSelector">
+      <select id="TrailSelector" onchange="SelectedTrailChanged()">
         <option value="0">Click a trail to view photos</option>
         <option value="5">Skyline Trail</option>
       </select>
