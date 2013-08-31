@@ -10,6 +10,7 @@
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDArYdyABFtER6IWwrfnsQq8jwd8JFt1po&sensor=false">
     </script>
+<script src="jquery-1.9.1.min.js"></script>
     <script type="text/javascript">
     var geocoder;
     var infowindow = new google.maps.InfoWindow();
@@ -38,12 +39,22 @@
       {
         $.ajax({
               type: "GET",
-              url: "Photos.php",
-              data:{submit:"GetGPSLoc"},
+              url: "Photos.php?query=GetGPSInformation",
               success: function(msg)
               {
-                alert(msg);
-                alert(JSON.parse(msg));
+                var GPSInf = JSON.parse(msg);
+		var TSelector = document.getElementById("TrailSelector");
+		var TrailIDArray = new Array();
+	
+		for (var i = 0; i < GPSInf.length; i++)
+		{
+			if ($.inArray(GPSInf[i]["TRAILID"], TrailIDArray) == -1) {
+				var option = document.createElement("option");
+				option.text = GPSInf[i]["TRAILID"];
+				TSelector.add(option, null);
+				TrailIDArray.push(GPSInf[i]["TRAILID"]);
+			}
+		}
               },
               error: function(jqXHR, textStatus, errorThrown) 
               {
@@ -92,7 +103,7 @@
       <input type="file" name="file" id="file"><br>
       <input type="submit" name="submit" value="Submit">
       </form>
-      <select>
+      <select id="TrailSelector">
         <option value="default">Click a trail to view photos</option>
         <option value="Skyline">Skyline Trail</option>
       </select>
