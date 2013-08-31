@@ -59,11 +59,12 @@
             	
             		for (var i = 0; i < GPSInf.length; i++)
             		{
-            			if ($.inArray(GPSInf[i]["TRAILID"], TrailIDArray) == -1) {
+            			if ($.inArray(GPSInf[i]["TrailID"], TrailIDArray) == -1) {
             				var option = document.createElement("option");
-            				option.text = GPSInf[i]["TRAILID"];
+            				option.text = GPSInf[i]["TrailID"];
+                    option.value = GPSInf[i]["TrailID"];
             				TSelector.add(option, null);
-            				TrailIDArray.push(GPSInf[i]["TRAILID"]);
+            				TrailIDArray.push(GPSInf[i]["TrailID"]);
             			}
             		}
               },
@@ -118,8 +119,8 @@
                 {
                   //Add this information to map
                   //Reconstruct the lat, long variables
-                  var lat = (+GPSInf[i]['LATMINUTE'] * 60 + +GPSInf[i]['LATSECOND'])/3600 + +GPSInf[i]['LATDEGREE'];
-                  var lng = (+GPSInf[i]['LONGMINUTE'] * 60 + +GPSInf[i]['LONGSECOND'])/3600 + +GPSInf[i]['LONGDEGREE'];
+                  var lat = (+GPSInf[i]['Latitude']);
+                  var lng = (+GPSInf[i]['Longitude']);
                   
                     var latlng = new google.maps.LatLng(lng.toFixed(3), lat.toFixed(3));
                     var image = "FlagIconTest.png";  

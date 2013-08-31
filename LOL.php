@@ -69,22 +69,20 @@ $LatitudeAct = ($LATITUDE['minutes']*60 + $LATITUDE['seconds'])/3600 + $LATITUDE
         else
         {
           $TrailID = GetTrailID($addr);
-	echo $TrailID;
+	         echo $TrailID;
           if ($TrailID == -1)
           {
             InsertTrailName($addr);
             $TrailID = GetTrailID($addr);
           }
-          mysqli_query($con, "INSERT INTO PHOTOS VALUES(".$LONGITUDE['degrees'].", "
-            .$LONGITUDE['minutes'].", ".$LONGITUDE['seconds'].", "
-            .$LATITUDE['degrees'].", ".$LATITUDE['minutes'].", "
-            .$LATITUDE['seconds'].", 0, " . $TrailID . ", 0, 'TEST')");
           
-          $query = "SELECT COUNT(*) FROM PHOTOS;";
+          
+          $query = "SELECT COUNT(*) FROM PhotoInformation;";
           $result = mysqli_query($con, $query);
           $count = mysqli_fetch_assoc($result);
-          print_r($count);
+          
           $ID = intval($count["COUNT(*)"]);
+          $ID = $ID+1;
           $FolderNum = floor($ID / 100);
 
           if (is_dir($FolderNum))
@@ -94,11 +92,13 @@ $LatitudeAct = ($LATITUDE['minutes']*60 + $LATITUDE['seconds'])/3600 + $LATITUDE
           {
             mkdir($FolderNum);
           }
-          echo "Reached here";
           //Time to compress the image
           $destinationURL = $FolderNum . "/" . $ID % 100 . ".jpg";
           //echo $FolderNum . $ID . $destinationURL;    
           
+          mysqli_query($con, "INSERT INTO PhotoInformation VALUES(".$LatitudeAct.", "
+           . $LongitudeAct . ", 0, " . $TrailID . ", 0," . $destinationURL . ")");
+
           $filename = compress_image($_FILES["file"]["tmp_name"], $destinationURL, 80);
           
           echo $destinationURL;

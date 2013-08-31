@@ -5,7 +5,7 @@ header("Content-Type: text/plain");
 function ReadGPSInformationFromDB()
 {
 	$con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
-	$query = "SELECT * FROM PHOTOS";
+	$query = "SELECT * FROM PhotoInformation";
 	$results = mysqli_query($con, $query);
 	if ($results)
 	{	
@@ -21,7 +21,7 @@ function ReadGPSInformationFromDB()
 function GetGpsInformation($TrailID)
 {
 	$con = mysqli_connect("localhost", "root", "Soccer1&", "GPSInfo");
-	$query = "SELECT * FROM PHOTOS WHERE TRAILID=".$TrailID;
+	$query = "SELECT * FROM PhotoInformation WHERE TrailID=".$TrailID;
 	$results = mysqli_query($con, $query);
 	if ($results)
 	{	
