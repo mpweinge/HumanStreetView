@@ -13,9 +13,25 @@
 <script src="jquery-1.9.1.min.js"></script>
 
 <script type="text/javascript">
+
+    $('TrailSelector').on('change', function (e) {
+        var optionSelected = $("option:selected", this);
+        var valueSelected = this.value;
+
+        //Remove all markers
+        for (var i = 0; i < markers.count; i++)
+        {
+          markers[i].setMap(null);
+        }
+        markers = [];
+
+        GetGPSOfPhotosAtTrail(valueSelected);
+    });
+
     var geocoder;
     var infowindow = new google.maps.InfoWindow();
     var map;
+    var markers;
       function initialize() 
       {
         var mapOptions = {
@@ -26,13 +42,7 @@
         geocoder = new google.maps.Geocoder();
         map = new google.maps.Map(document.getElementById("map-canvas"),
             mapOptions);
-        //var image = 'FlagIconTest.png';
-        //var myLatLng = new google.maps.LatLng(-34.397, 150.644);
-        //var beachMarker = new google.maps.Marker({
-//          position:myLatLng,
- //         map:map,
-  //        icon:image
-   //     });
+        markers = new Array();
       }
       google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -111,14 +121,15 @@
                   var lat = (+GPSInf[i]['LATMINUTE'] * 60 + +GPSInf[i]['LATSECOND'])/3600 + +GPSInf[i]['LATDEGREE'];
                   var lng = (+GPSInf[i]['LONGMINUTE'] * 60 + +GPSInf[i]['LONGSECOND'])/3600 + +GPSInf[i]['LONGDEGREE'];
                   
-                  var latlng = new google.maps.LatLng(lng.toFixed(3), lat.toFixed(3));
-                var image = "FlagIconTest.png";  
-		var marker = new google.maps.Marker
-                  ({
-                    position: latlng,
-                    map: map,
-			icon:image
-                  });
+                    var latlng = new google.maps.LatLng(lng.toFixed(3), lat.toFixed(3));
+                    var image = "FlagIconTest.png";  
+                		var marker = new google.maps.Marker
+                                ({
+                                  position: latlng,
+                                  map: map,
+                            			icon:image
+                                });
+                    markers.push(marker);
                 }
               },
               error: function(jqXHR, textStatus, errorThrown) 
@@ -139,15 +150,15 @@
     <div id="TitleBar">
       <p> Welcome to TrailView</p>
       <p style="display:inline"> Mikey's Profile </p> 
-      <button onclick="javascript:{GeocodeReversePhotos(); GetGPSOfPhotosAtTrail(5); }"> Load Image Locations</button>
+      <button onclick="javascript:GeocodeReversePhotos()"> Load Image Locations</button>
       <form action="LOL.php" method="post" enctype="multipart/form-data">
       <label for="file">Filename:</label>
       <input type="file" name="file" id="file"><br>
       <input type="submit" name="submit" value="Submit">
       </form>
       <select id="TrailSelector">
-        <option value="default">Click a trail to view photos</option>
-        <option value="Skyline">Skyline Trail</option>
+        <option value="0">Click a trail to view photos</option>
+        <option value="5">Skyline Trail</option>
       </select>
     </div>
     <div id="map-canvas"/>
