@@ -34,9 +34,22 @@
       }
       google.maps.event.addDomListener(window, 'load', initialize);
 
-      function GeocodeReverseTest()
+      function GeocodeReversePhotos()
       {
-        codeLatLng(46.794, -121.736);
+        $.ajax({
+              type: "GET",
+              url: "Photos.php",
+              data:{submit:"GetGPSLoc"},
+              success: function(msg)
+              {
+                alert(msg);
+                alert(JSON.parse(msg));
+              },
+              error: function(jqXHR, textStatus, errorThrown) 
+              {
+                alert("failed" + jqXHR + textStatus + errorThrown);
+              }
+             });
       }
 
       function codeLatLng(lat, lng) 
@@ -52,7 +65,6 @@
                   position: latlng,
                   map: map
               });
-              alert(results);
               infowindow.setContent(results[0].formatted_address);
               infowindow.open(map, marker);
             } else {
@@ -74,7 +86,7 @@
     <div id="TitleBar">
       <p> Welcome to TrailView</p>
       <p style="display:inline"> Mikey's Profile </p> 
-      <button onclick="javascript:GeocodeReverseTest()"> Load Image Locations</button>
+      <button onclick="javascript:GeocodeReversePhotos()"> Load Image Locations</button>
       <form action="LOL.php" method="post" enctype="multipart/form-data">
       <label for="file">Filename:</label>
       <input type="file" name="file" id="file"><br>
