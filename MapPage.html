@@ -122,7 +122,12 @@
                   var lat = (+GPSInf[i]['Latitude']);
                   var lng = (+GPSInf[i]['Longitude']);
                   
-                    var latlng = new google.maps.LatLng(lng.toFixed(3), lat.toFixed(3));
+                    var latlng = new google.maps.LatLng(lat, lng);
+		    var bounds = new google.maps.LatLngBounds();
+		    bounds.extend(latlng);
+		    map.fitBounds(bounds);
+		    map.setCenter(latlng);
+		    map.setZoom(15);
                     var image = "FlagIconTest.png";  
                 		var marker = new google.maps.Marker
                                 ({
