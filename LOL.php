@@ -96,7 +96,7 @@ $LatitudeAct = ($LATITUDE['minutes']*60 + $LATITUDE['seconds'])/3600 + $LATITUDE
           $destinationURL = $FolderNum . "/" . $ID % 100 . ".jpg";
           //echo $FolderNum . $ID . $destinationURL;    
           $query = "INSERT INTO PhotoInformation VALUES(".$LatitudeAct.", "
-           . $LongitudeAct . ", 0, " . $TrailID . ", 0," . $destinationURL . ")";
+           . $LongitudeAct . ", 0, " . $TrailID . ', 0,"' . $destinationURL . '")';
           echo $query;
 
           mysqli_query($con, $query);
