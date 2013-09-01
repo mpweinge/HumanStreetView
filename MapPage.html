@@ -10,7 +10,10 @@
     <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyDArYdyABFtER6IWwrfnsQq8jwd8JFt1po&sensor=false">
     </script>
-<script src="jquery-1.9.1.min.js"></script>
+    <script src="jquery-1.9.1.min.js"></script>
+    <script src="lightbox/js/lightbox-2.6.min.js"></script>
+    <link href="lightbox/css/lightbox.css" rel="stylesheet" />
+
 
 <script type="text/javascript">
 
@@ -94,12 +97,9 @@
                   map: map
               });
 
-              google.maps.event.addListener(marker, 'click', function() {
-		return function()
-		{
-                   DisplayInfoWindow("0/1");
-		}
-              });
+              var message = "0/1";
+      
+              DisplayInfoWindowOnEvent(marker, message);
               //infowindow.setContent(results[0].formatted_address);
               //infowindow.open(map, marker);
 
@@ -112,16 +112,24 @@
         });
       }
 
+      function OpenFullPicture(PhotoURL)
+      { 
+        $("body").append('<a href="img/image-1.jpg" data-lightbox="image-1" title="My caption">image #1</a>');
+      }
+
       function DisplayInfoWindowOnEvent(marker, PhotoURL)
       {
-          var InfoWindowDiv = "<div style='float:right; padding:5px;'><img src='" +
+          var InfoWindowDiv = "<div style='float:right; padding:5px;'><a rel='lightbox' href=\"http://99.249.128.170/HumanStreetView/" + PhotoURL + ".jpg\" data-lightbox=\"ImageClose-1\"><img src='" +
                     "http://99.249.128.170/HumanStreetView/"+ PhotoURL +
-                    "_thumb.jpg'</img></div>";
+                    "_thumb.jpg' style='cursor:pointer' onclick='OpenFullPicture(" + PhotoURL + ")'></img></a></div>";
+
         var InfWind = new google.maps.InfoWindow();  
-	InfWind.setContent(InfoWindowDiv);
-	google.maps.event.addListener(marker, 'click', function() {
-    InfWind.open(marker.get('map'), marker);
-  });
+          	InfWind.setContent(InfoWindowDiv);
+          	google.maps.event.addListener(marker, 'click', function() 
+            {
+              InfWind.open(marker.get('map'), marker);
+            });
+
       }
 
       function GetTrailNames(ArrayOfIDs)
@@ -148,11 +156,11 @@
                   var lng = (+GPSInf[i]['Longitude']);
                   
                     var latlng = new google.maps.LatLng(lat, lng);
-		    var bounds = new google.maps.LatLngBounds();
-		    bounds.extend(latlng);
-		    map.fitBounds(bounds);
-		    map.setCenter(latlng);
-		    map.setZoom(15);
+            		    var bounds = new google.maps.LatLngBounds();
+            		    bounds.extend(latlng);
+            		    map.fitBounds(bounds);
+            		    map.setCenter(latlng);
+            		    map.setZoom(15);
                     var image = "FlagIconTest.png";  
                 		var marker = new google.maps.Marker
                                 ({
@@ -162,9 +170,9 @@
                                 });
                     markers.push(marker);
 
-			var message = GPSInf[i]['Filename'].substring(0, GPSInf[i]['Filename'].indexOf('.'));
+			               var message = GPSInf[i]['Filename'].substring(0, GPSInf[i]['Filename'].indexOf('.'));
 			
-			DisplayInfoWindowOnEvent(marker, message);
+			             DisplayInfoWindowOnEvent(marker, message);
                 }
               },
               error: function(jqXHR, textStatus, errorThrown) 
@@ -196,6 +204,7 @@
         <option value="5">Skyline Trail</option>
       </select>
     </div>
+    <a href="lightbox/img/demopage/image-1.jpg" data-lightbox="example-1">LOL?</a>
     <div id="map-canvas"/>
   </body>
 </html>
