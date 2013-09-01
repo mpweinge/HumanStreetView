@@ -95,7 +95,10 @@
               });
 
               google.maps.event.addListener(marker, 'click', function() {
-                   DisplayInfoWindow("0/1_thumb.jpg");
+		return function()
+		{
+                   DisplayInfoWindow("0/1");
+		}
               });
               //infowindow.setContent(results[0].formatted_address);
               //infowindow.open(map, marker);
@@ -109,13 +112,16 @@
         });
       }
 
-      function DisplayInfoWindow(PhotoURL)
+      function DisplayInfoWindowOnEvent(marker, PhotoURL)
       {
           var InfoWindowDiv = "<div style='float:right; padding:5px;'><img src='" +
                     "http://99.249.128.170/HumanStreetView/"+ PhotoURL +
-                    "'</img></div>";
-          infowindow.setContent(InfoWindowDiv);
-          infowindow.open(map, marker);
+                    "_thumb.jpg'</img></div>";
+        var InfWind = new google.maps.InfoWindow();  
+	InfWind.setContent(InfoWindowDiv);
+	google.maps.event.addListener(marker, 'click', function() {
+    InfWind.open(marker.get('map'), marker);
+  });
       }
 
       function GetTrailNames(ArrayOfIDs)
@@ -156,9 +162,9 @@
                                 });
                     markers.push(marker);
 
-                    google.maps.event.addListener(marker, 'click', function() {
-                      DisplayInfoWindow(GPSInf[i]['Filename']);
-                    });
+			var message = GPSInf[i]['Filename'].substring(0, GPSInf[i]['Filename'].indexOf('.'));
+			
+			DisplayInfoWindowOnEvent(marker, message);
                 }
               },
               error: function(jqXHR, textStatus, errorThrown) 
